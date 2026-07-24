@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0e1f">
+<title>С днём рождения, Даша 🤍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#070a17;
+  --bg-1:#0d1226;
+  --bg-2:#161d3d;
+  --gold:#f3d18a;
+  --gold-soft:#e8be6a;
+  --pink:#f6c1d0;
+  --pink-soft:#eaa0b6;
+  --text:#f4f0fb;
+  --text-dim:#b9c0dd;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--sans);
+  color:var(--text);
+  background:radial-gradient(120% 90% at 50% 0%,var(--bg-2) 0%,var(--bg-1) 38%,var(--bg-0) 100%);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body.locked{overflow:hidden;height:100%}
+
+/* ---------- starfield ---------- */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.star{position:absolute;border-radius:50%;background:#fff;opacity:.7;animation:tw var(--d,4s) ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.15;transform:scale(.7)}to{opacity:.9;transform:scale(1)}}
+
+/* ---------- global fireworks canvas ---------- */
+#fw{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+/* ---------- overlays (intro + cake) ---------- */
+.stage{
+  position:fixed;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:32px 24px;
+  transition:opacity .9s ease,visibility .9s ease;
+}
+.stage.hidden{opacity:0;visibility:hidden;pointer-events:none}
+
+/* ---------- intro ---------- */
+#intro .kicker{
+  font-family:var(--sans);font-weight:400;letter-spacing:.42em;
+  text-transform:uppercase;font-size:.72rem;color:var(--gold);
+  opacity:0;transform:translateY(14px);animation:rise .9s .2s forwards;
+}
+#intro h1{
+  font-family:var(--serif);font-weight:600;line-height:1.02;
+  font-size:clamp(2.9rem,13vw,5.6rem);margin:.28em 0 .1em;
+  background:linear-gradient(180deg,#fff 0%,var(--gold) 70%,var(--gold-soft) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 40px rgba(243,209,138,.25);
+  opacity:0;transform:translateY(18px);animation:rise 1s .45s forwards;
+}
+#intro h1 .name{font-style:italic;display:block;font-size:1.12em}
+#intro .sub{
+  color:var(--text-dim);font-weight:300;font-size:1.02rem;max-width:22ch;margin:.2em auto 0;
+  opacity:0;transform:translateY(16px);animation:rise 1s .8s forwards;
+}
+.open-btn{
+  margin-top:2.4rem;padding:16px 42px;border:none;cursor:pointer;
+  font-family:var(--sans);font-weight:600;font-size:1.02rem;letter-spacing:.03em;
+  color:#2a1c05;border-radius:100px;
+  background:linear-gradient(135deg,#fbe4a6,var(--gold) 55%,var(--gold-soft));
+  box-shadow:0 10px 34px rgba(243,209,138,.34),inset 0 1px 0 rgba(255,255,255,.6);
+  opacity:0;transform:translateY(16px);animation:rise 1s 1.15s forwards;
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.open-btn:active{transform:scale(.96)}
+.open-btn .heart{margin-left:.4em}
+.hint-tap{margin-top:1.2rem;font-size:.8rem;color:var(--text-dim);opacity:0;animation:fade 1s 1.5s forwards}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+@keyframes fade{to{opacity:.75}}
+
+/* ---------- cake ---------- */
+#cake{z-index:6}
+.cake-head{position:relative;width:100%;min-height:118px;margin-bottom:24px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center}
+#cake .cake-title{
+  font-family:var(--serif);font-size:clamp(1.5rem,6.5vw,2.2rem);font-weight:500;
+  color:var(--text);margin-bottom:6px;transition:opacity .5s;
+}
+#cake .cake-note{color:var(--text-dim);font-weight:300;font-size:.92rem;min-height:1.2em;transition:opacity .5s}
+#cake.wishing .cake-title,#cake.wishing .cake-note{opacity:0}
+.cake-wrap{position:relative;width:min(320px,82vw);height:300px;display:flex;align-items:flex-end;justify-content:center}
+
+.candles{position:absolute;bottom:150px;left:50%;transform:translateX(-50%);display:flex;gap:min(4.4vw,20px);z-index:3}
+.candle{position:relative;width:11px;height:52px;border-radius:4px;cursor:pointer;padding:0;border:none;
+  background:repeating-linear-gradient(180deg,#f7c9d6 0 8px,#fff 8px 16px);
+  box-shadow:inset -2px 0 3px rgba(0,0,0,.18),0 2px 4px rgba(0,0,0,.25);
+  transform-origin:bottom center;transition:transform .3s;}
+.candle::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:2px;height:6px;background:#3a2a12}
+.flame{position:absolute;top:-24px;left:50%;transform:translateX(-50%);
+  width:14px;height:22px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:radial-gradient(ellipse at 50% 75%,#fff 0%,#ffe08a 30%,#ff9d2f 62%,#ff5e2e 100%);
+  box-shadow:0 0 18px 6px rgba(255,160,60,.6),0 0 40px 14px rgba(255,120,40,.35);
+  animation:flick .28s ease-in-out infinite alternate;transform-origin:bottom center;}
+@keyframes flick{from{transform:translateX(-50%) scaleY(.94) rotate(-2deg)}to{transform:translateX(-50%) scaleY(1.06) rotate(2deg)}}
+.candle.out .flame{opacity:0;transform:translateX(-50%) scale(.2);transition:opacity .35s,transform .35s;box-shadow:none}
+.candle.out{filter:saturate(.85)}
+.smoke{position:absolute;top:-26px;left:50%;width:8px;height:8px;border-radius:50%;
+  background:rgba(220,220,235,.5);opacity:0;pointer-events:none}
+.candle.out .smoke{animation:smoke 1.1s ease-out forwards}
+@keyframes smoke{0%{opacity:.55;transform:translate(-50%,0) scale(.6)}100%{opacity:0;transform:translate(-40%,-46px) scale(2.2)}}
+
+.cake-body{position:relative;width:100%;z-index:2}
+.tier{margin:0 auto;border-radius:16px 16px 12px 12px;position:relative}
+.tier-top{width:78%;height:64px;background:linear-gradient(180deg,#fff5f7 0%,#fde3ea 100%);z-index:2;
+  box-shadow:0 6px 0 -2px rgba(0,0,0,.06)}
+.tier-top::after{content:"";position:absolute;left:0;right:0;top:44px;height:26px;
+  background:radial-gradient(14px 18px at 12% 0,#fff5f7 55%,transparent 56%) repeat-x;background-size:34px 26px}
+.tier-bottom{width:100%;height:96px;margin-top:-6px;
+  background:linear-gradient(180deg,#7b4a2e 0%,#5f3820 100%);z-index:1;
+  box-shadow:inset 0 6px 0 rgba(255,255,255,.06)}
+.tier-bottom::before{content:"";position:absolute;inset:0;border-radius:16px 16px 12px 12px;
+  background:radial-gradient(6px 8px at 20% 30%,rgba(255,255,255,.12) 60%,transparent 61%),
+             radial-gradient(5px 7px at 60% 55%,rgba(255,255,255,.1) 60%,transparent 61%),
+             radial-gradient(5px 7px at 82% 34%,rgba(255,255,255,.1) 60%,transparent 61%)}
+.plate{width:112%;height:16px;background:linear-gradient(180deg,#e9edff,#aeb6da);border-radius:0 0 50% 50%/0 0 100% 100%;margin-top:-2px;box-shadow:0 14px 30px rgba(0,0,0,.4)}
+
+.wish{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;opacity:0;visibility:hidden;transition:opacity .8s;z-index:5;pointer-events:none}
+.wish.show{opacity:1;visibility:visible}
+.wish .w-big{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(2rem,9vw,2.9rem);
+  color:#fff;text-shadow:0 0 26px rgba(243,209,138,.75),0 2px 10px rgba(0,0,0,.5)}
+.wish .w-sub{color:var(--gold);font-weight:500;letter-spacing:.06em;font-size:1.02rem;
+  text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.scroll-cue{margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-dim);
+  font-size:.8rem;opacity:0;transition:opacity .6s;cursor:pointer}
+.scroll-cue.show{opacity:.85;animation:bob 1.8s ease-in-out infinite}
+.scroll-cue .chev{width:20px;height:20px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+/* floating compliment — appears in the upper third, clear of the cake */
+.compliment{position:fixed;left:50%;top:18%;transform:translate(-50%,0);z-index:8;pointer-events:none;
+  font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(1.25rem,5.8vw,1.75rem);color:#fff;
+  text-shadow:0 0 22px rgba(243,209,138,.7),0 2px 12px rgba(0,0,0,.65);max-width:82vw;text-align:center;line-height:1.3;
+  animation:floatUp 2.5s ease-out forwards}
+@keyframes floatUp{
+  0%{opacity:0;transform:translate(-50%,26px) scale(.92)}
+  16%{opacity:1;transform:translate(-50%,0) scale(1)}
+  72%{opacity:1;transform:translate(-50%,-10px) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-54px) scale(1.03)}
+}
+
+/* ---------- story ---------- */
+#story{position:relative;z-index:3;display:none}
+#story.on{display:block}
+.story-intro{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12vh 24px 6vh}
+.story-intro .si-kicker{color:var(--gold);letter-spacing:.4em;text-transform:uppercase;font-size:.68rem;margin-bottom:14px}
+.story-intro h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,9vw,3rem);line-height:1.1}
+.story-intro p{color:var(--text-dim);font-weight:300;margin-top:14px;max-width:26ch}
+
+.photo-card{max-width:520px;margin:0 auto;padding:10vh 22px}
+.frame{position:relative;border-radius:20px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.03);
+  aspect-ratio:4/5;}
+.frame img{width:100%;height:100%;object-fit:cover;display:block}
+.frame .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;
+  color:var(--text-dim);font-weight:300;letter-spacing:.05em;
+  background:
+    linear-gradient(135deg,rgba(243,209,138,.10),rgba(234,160,182,.10)),
+    repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0 12px,transparent 12px 24px);}
+.frame .ph b{font-family:var(--serif);font-size:2.2rem;color:var(--gold);font-weight:500}
+.frame .ph small{opacity:.7}
+.caption{font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,5.2vw,1.5rem);line-height:1.35;
+  color:var(--text);text-align:center;margin-top:26px}
+
+.reveal{opacity:0;transform:translateY(46px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+.reveal.visible{opacity:1;transform:none}
+
+/* ---------- finale ---------- */
+#finale{text-align:center;padding:16vh 24px 20vh;max-width:640px;margin:0 auto;position:relative;z-index:3}
+#finale .age{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:clamp(1.3rem,6vw,1.9rem);margin-bottom:18px}
+#finale h2{font-family:var(--serif);font-weight:600;font-size:clamp(2.2rem,10vw,3.4rem);line-height:1.06;
+  background:linear-gradient(180deg,#fff,var(--gold) 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#finale .wish-text{color:var(--text-dim);font-weight:300;font-size:1.06rem;line-height:1.7;margin:28px auto 0;max-width:32ch}
+#finale .heart-big{font-size:2.4rem;margin:30px 0 8px;filter:drop-shadow(0 0 18px rgba(234,160,182,.5))}
+#finale .sign{font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--text)}
+#finale .sign small{display:block;color:var(--text-dim);font-style:normal;font-family:var(--sans);font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;margin-bottom:6px}
+.replay{margin-top:44px;padding:13px 30px;border:1px solid rgba(243,209,138,.5);background:rgba(243,209,138,.06);
+  color:var(--gold);border-radius:100px;font-family:var(--sans);font-size:.92rem;cursor:pointer;transition:background .25s,transform .2s}
+.replay:active{transform:scale(.96)}
+.replay:hover{background:rgba(243,209,138,.14)}
+
+/* ---------- mute ---------- */
+#mute{position:fixed;top:16px;right:16px;z-index:20;width:46px;height:46px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);background:rgba(10,14,31,.55);backdrop-filter:blur(8px);
+  color:var(--text);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:1.1rem;
+  transition:transform .2s,background .2s}
+#mute.show{display:flex}
+#mute:active{transform:scale(.9)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;transition-duration:.2s!important}
+}
+</style>
+</head>
+<body class="locked">
+
+<div id="stars"></div>
+<canvas id="fw"></canvas>
+
+<button id="mute" aria-label="Звук">🔊</button>
+
+<!-- INTRO -->
+<section id="intro" class="stage">
+  <div class="kicker">23 июля • сегодня твой день</div>
+  <h1>С днём рождения<span class="name">Даша</span></h1>
+  <p class="sub">Нажми — и начнётся немного волшебства</p>
+  <button class="open-btn" id="openBtn">Открыть<span class="heart">🤍</span></button>
+  <div class="hint-tap">со звуком будет теплее</div>
+</section>
+
+<!-- CAKE -->
+<section id="cake" class="stage hidden">
+  <div class="cake-head">
+    <div class="cake-title" id="cakeTitle">Задуй свечи, Даша</div>
+    <div class="cake-note" id="cakeNote">тапни по каждому огоньку</div>
+    <div class="wish" id="wish">
+      <div class="w-big">Загадай желание</div>
+      <div class="w-sub">🤍 оно обязательно сбудется</div>
+    </div>
+  </div>
+  <div class="cake-wrap">
+    <div class="candles" id="candles"></div>
+    <div class="cake-body">
+      <div class="tier tier-top"></div>
+      <div class="tier tier-bottom"></div>
+      <div class="plate"></div>
+    </div>
+  </div>
+  <div class="scroll-cue" id="scrollCue"><span>дальше</span><span class="chev"></span></div>
+</section>
+
+<!-- STORY -->
+<main id="story">
+  <section class="story-intro reveal">
+    <div class="si-kicker">а теперь — про нас</div>
+    <h2>Немного тебя<br>и немного нас</h2>
+    <p>листай медленно, я собрал это с любовью</p>
+  </section>
+
+  <article class="photo-card">
+    <div class="frame reveal"><img src="photos/1.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>1</b><small>photos/1.jpg</small></div></div>
+    <p class="caption reveal">Твои веснушки и этот взгляд из-под шляпки — целое лето в одном кадре. Я бы смотрел на тебя вечно.</p>
+  </article>
+
+  <article class="photo-card">
+    <div class="frame reveal"><img src="photos/2.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>2</b><small>photos/2.jpg</small></div></div>
+    <p class="caption reveal">Даже когда ты просто задумалась — ты невозможно красивая. И будто сама этого не замечаешь.</p>
+  </article>
+
+  <article class="photo-card">
+    <div class="frame reveal"><img src="photos/3.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>3</b><small>photos/3.jpg</small></div></div>
+    <p class="caption reveal">Ты и ромашки будто созданы друг для друга: простые, нежные и настоящие.</p>
+  </article>
+
+  <article class="photo-card">
+    <div class="frame reveal"><img src="photos/4.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>4</b><small>photos/4.jpg</small></div></div>
+    <p class="caption reveal">С тобой я разрешаю себе быть вот таким. Спасибо, что смеёшься вместе со мной.</p>
+  </article>
+
+  <article class="photo-card">
+    <div class="frame reveal"><img src="photos/5.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>5</b><small>photos/5.jpg</small></div></div>
+    <p class="caption reveal">Рядом с тобой мне спокойно. Вот это тепло и есть моё любимое место на земле.</p>
+  </article>
+
+  <section id="finale">
+    <div class="age reveal">Тебе сегодня 20 ✨</div>
+    <h2 class="reveal">С днём рождения,<br>любимая</h2>
+    <p class="wish-text reveal">Пусть этот год будет к тебе таким же нежным, как ты — ко мне. Пусть сбывается загаданное над свечами, а рядом всегда будет тот, кто тебя любит. Спасибо, что ты есть.</p>
+    <div class="heart-big reveal">🤍</div>
+    <div class="sign reveal"><small>всегда твой</small>Шелуха</div>
+    <button class="replay reveal" id="replay">запустить салют ещё раз ✨</button>
+  </section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* ---------- starfield ---------- */
+  (function(){
+    var box=document.getElementById('stars'),f=document.createDocumentFragment();
+    for(var i=0;i<90;i++){
+      var s=document.createElement('div');s.className='star';
+      var sz=Math.random()*2+1;
+      s.style.width=s.style.height=sz+'px';
+      s.style.left=Math.random()*100+'%';
+      s.style.top=Math.random()*100+'%';
+      s.style.setProperty('--d',(Math.random()*4+2.5)+'s');
+      s.style.animationDelay=(Math.random()*4)+'s';
+      f.appendChild(s);
+    }
+    box.appendChild(f);
+  })();
+
+  /* ---------- fireworks engine ---------- */
+  var canvas=document.getElementById('fw'),ctx=canvas.getContext('2d'),W,H,DPR;
+  function resize(){
+    var w=window.innerWidth||document.documentElement.clientWidth||360;
+    var h=window.innerHeight||document.documentElement.clientHeight||640;
+    DPR=Math.min(window.devicePixelRatio||1,2);
+    W=canvas.width=w*DPR;H=canvas.height=h*DPR;
+    canvas.style.width=w+'px';canvas.style.height=h+'px';
+  }
+  resize();addEventListener('resize',resize);addEventListener('load',resize);
+  requestAnimationFrame(resize);setTimeout(resize,250);setTimeout(resize,800);
+
+  var particles=[],rockets=[],running=false,mode='idle',lastSpawn=0,spawnGap=520,flash=0;
+  var palette=[[255,224,138],[246,193,106],[246,193,208],[234,160,182],[255,255,255],[173,196,255]];
+  function col(){return palette[(Math.random()*palette.length)|0];}
+
+  function explode(x,y,power){
+    if(particles.length>1300)return;           // safety cap for weaker phones
+    var c=col(),n=power||(60+Math.random()*40);
+    flash=Math.min(flash+0.25,0.6);
+    for(var i=0;i<n;i++){
+      var a=Math.random()*Math.PI*2,sp=(Math.random()*4.4+1)*DPR*(power?1.15:1);
+      particles.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,
+        life:1,decay:Math.random()*0.012+0.008,c:c,size:(Math.random()*2+1.4)*DPR});
+    }
+  }
+  function launch(tx,ty){
+    rockets.push({x:tx,y:H+10,tx:tx,ty:ty,vy:-(Math.random()*3+7)*DPR,c:col()});
+  }
+  function spawnFor(m){
+    if(m==='burst'){
+      // fireworks all around, biased to edges (immersive)
+      var edge=Math.random();
+      var x = edge<0.5 ? (Math.random()*0.28+ (Math.random()<0.5?0.02:0.70))*W : Math.random()*W;
+      var y = (Math.random()*0.5+0.06)*H;
+      explode(x,y,70+Math.random()*50);
+      if(Math.random()<0.5) launch(Math.random()*W, (Math.random()*0.4+0.12)*H);
+    } else if(m==='ambient'){
+      var side=Math.random()<0.5?0.14:0.86;
+      launch((side+ (Math.random()*0.1-0.05))*W, (Math.random()*0.4+0.14)*H);
+    }
+  }
+
+  function frame(ts){
+    if(!running){return;}
+    requestAnimationFrame(frame);
+    ctx.globalCompositeOperation='source-over';
+    ctx.fillStyle='rgba(7,10,23,'+(mode==='burst'?0.22:0.30)+')';
+    ctx.fillRect(0,0,W,H);
+    if(flash>0){ctx.fillStyle='rgba(255,240,210,'+flash+')';ctx.fillRect(0,0,W,H);flash*=0.86;if(flash<0.01)flash=0;}
+    ctx.globalCompositeOperation='lighter';
+
+    if(!reduced && ts-lastSpawn>spawnGap){lastSpawn=ts;spawnFor(mode);}
+
+    for(var i=rockets.length-1;i>=0;i--){
+      var r=rockets[i];r.x+=(r.tx-r.x)*0.02;r.y+=r.vy;r.vy+=0.06*DPR;
+      ctx.fillStyle='rgba('+r.c[0]+','+r.c[1]+','+r.c[2]+',.9)';
+      ctx.beginPath();ctx.arc(r.x,r.y,2*DPR,0,7);ctx.fill();
+      if(r.vy>=-1.2*DPR || r.y<=r.ty){explode(r.x,r.y);rockets.splice(i,1);}
+    }
+    for(var j=particles.length-1;j>=0;j--){
+      var p=particles[j];p.vx*=0.985;p.vy=p.vy*0.985+0.035*DPR;p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;
+      if(p.life<=0){particles.splice(j,1);continue;}
+      ctx.globalAlpha=Math.max(p.life,0);
+      ctx.fillStyle='rgb('+p.c[0]+','+p.c[1]+','+p.c[2]+')';
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size*p.life,0,7);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  function start(m){mode=m;if(!running){running=true;requestAnimationFrame(frame);} }
+  function burstFor(ms){
+    start('burst');
+    // initial volley
+    for(var i=0;i<6;i++){setTimeout(function(){spawnFor('burst');},i*120);}
+    clearTimeout(burstFor._t);
+    burstFor._t=setTimeout(function(){ start('ambient'); }, ms||3200);
+  }
+  // idle intro: keep bursting softly on the intro screen
+  function introLoop(){ start('burst'); }
+
+  /* ---------- audio ---------- */
+  var audio=new Audio('audio/song.mp3');audio.loop=true;audio.volume=0;
+  var muteBtn=document.getElementById('mute'),isMuted=false,fadeTimer;
+  function fadeTo(target){clearInterval(fadeTimer);fadeTimer=setInterval(function(){
+    var d=target-audio.volume;if(Math.abs(d)<0.03){audio.volume=target;clearInterval(fadeTimer);return;}
+    audio.volume=Math.min(1,Math.max(0,audio.volume+d*0.12));
+  },60);}
+  function playMusic(){audio.play().then(function(){fadeTo(0.85);}).catch(function(){});}
+  muteBtn.addEventListener('click',function(){
+    isMuted=!isMuted;
+    if(isMuted){fadeTo(0);muteBtn.textContent='🔇';}else{audio.play().catch(function(){});fadeTo(0.85);muteBtn.textContent='🔊';}
+  });
+
+  /* ---------- flow: intro -> cake ---------- */
+  var body=document.body,intro=document.getElementById('intro'),cake=document.getElementById('cake');
+  introLoop();
+  document.getElementById('openBtn').addEventListener('click',function(){
+    playMusic();
+    muteBtn.classList.add('show');
+    burstFor(2600);
+    intro.classList.add('hidden');
+    setTimeout(function(){cake.classList.remove('hidden');},650);
+  });
+
+  /* ---------- cake candles ---------- */
+  var compliments=[
+    'Рядом с тобой я становлюсь собой',
+    'Твоя улыбка — моё любимое время суток',
+    'С тобой даже обычный день — праздник',
+    'Ты делаешь меня счастливым без слов',
+    'Обожаю, как ты смеёшься',
+    'Ты — моё самое родное «домой»',
+    'Я выбираю тебя. Каждый день'
+  ];
+  var candlesBox=document.getElementById('candles'),lit=compliments.length,order=[];
+  compliments.forEach(function(txt,i){
+    var b=document.createElement('button');b.className='candle';b.setAttribute('aria-label','свеча');
+    b.innerHTML='<span class="flame"></span><span class="smoke"></span>';
+    b.addEventListener('click',function(){ blow(b,txt); });
+    candlesBox.appendChild(b);
+  });
+  var cakeNote=document.getElementById('cakeNote');
+  function blow(el,txt){
+    if(el.classList.contains('out'))return;
+    el.classList.add('out');lit--;
+    showCompliment(txt);
+    // little puff of particles at candle
+    var rect=el.getBoundingClientRect();
+    // gentle: nothing on main canvas needed; smoke is CSS
+    var left=compliments.length-lit;
+    cakeNote.textContent = lit>0 ? 'осталось задуть: '+lit : 'ты задула все свечи 🤍';
+    if(lit===0){setTimeout(allBlown,700);}
+  }
+  function showCompliment(txt){
+    var c=document.createElement('div');c.className='compliment';c.textContent=txt;
+    document.body.appendChild(c);
+    setTimeout(function(){c.remove();},2500);
+  }
+  function allBlown(){
+    document.getElementById('cake').classList.add('wishing');
+    document.getElementById('wish').classList.add('show');
+    setTimeout(function(){document.getElementById('scrollCue').classList.add('show');},1400);
+  }
+  document.getElementById('scrollCue').addEventListener('click',goStory);
+  function goStory(){
+    body.classList.remove('locked');
+    cake.classList.add('hidden');
+    var story=document.getElementById('story');
+    story.classList.add('on');
+    start('ambient');
+    requestAnimationFrame(checkReveals);
+    setTimeout(function(){story.scrollIntoView({behavior:'smooth'});checkReveals();},60);
+    // safety-net ticker: reveal anything that enters view, regardless of scroll-event delivery
+    var revTick=setInterval(function(){
+      checkReveals();
+      if(!document.querySelector('.reveal:not(.visible)')) clearInterval(revTick);
+    },150);
+  }
+
+  /* ---------- reveal on scroll (robust; works after display toggle) ---------- */
+  function checkReveals(){
+    var vh=window.innerHeight||document.documentElement.clientHeight;
+    var list=document.querySelectorAll('.reveal:not(.visible)');
+    for(var i=0;i<list.length;i++){
+      // reveal once the element's top has crossed the trigger line; stays revealed
+      // even after a fast fling scrolls it above the viewport
+      if(list[i].getBoundingClientRect().top < vh*0.86){ list[i].classList.add('visible'); }
+    }
+  }
+  addEventListener('scroll',checkReveals,{passive:true});
+  addEventListener('resize',checkReveals);
+
+  /* ---------- replay ---------- */
+  document.getElementById('replay').addEventListener('click',function(){
+    start('burst');
+    for(var i=0;i<8;i++){(function(k){setTimeout(function(){spawnFor('burst');},k*140);})(i);}
+    clearTimeout(document.getElementById('replay')._t);
+    document.getElementById('replay')._t=setTimeout(function(){start('ambient');},3400);
+    window.scrollTo({top:document.getElementById('finale').offsetTop-40,behavior:'smooth'});
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Служебные файлы Claude Code — в репозиторий/на сайт не нужны
+.claude/
+
+# Системный мусор Windows/macOS
+Thumbs.db
+Desktop.ini
+.DS_Store
