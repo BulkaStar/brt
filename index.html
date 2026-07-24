@@ -7,7 +7,7 @@
 <title>С днём рождения, Даша 🤍</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg-0:#070a17;
@@ -70,17 +70,40 @@ body.locked{overflow:hidden;height:100%}
   color:var(--text-dim);font-weight:300;font-size:1.02rem;max-width:22ch;margin:.2em auto 0;
   opacity:0;transform:translateY(16px);animation:rise 1s .8s forwards;
 }
-.open-btn{
-  margin-top:2.4rem;padding:16px 42px;border:none;cursor:pointer;
-  font-family:var(--sans);font-weight:600;font-size:1.02rem;letter-spacing:.03em;
-  color:#2a1c05;border-radius:100px;
-  background:linear-gradient(135deg,#fbe4a6,var(--gold) 55%,var(--gold-soft));
-  box-shadow:0 10px 34px rgba(243,209,138,.34),inset 0 1px 0 rgba(255,255,255,.6);
+/* ---------- envelope button ---------- */
+.envelope{
+  margin-top:2.6rem;background:none;border:none;cursor:pointer;padding:0;
+  display:flex;flex-direction:column;align-items:center;gap:1rem;
   opacity:0;transform:translateY(16px);animation:rise 1s 1.15s forwards;
-  transition:transform .25s ease,box-shadow .25s ease;
 }
-.open-btn:active{transform:scale(.96)}
-.open-btn .heart{margin-left:.4em}
+.env-body{
+  position:relative;width:158px;height:104px;border-radius:10px;
+  background:linear-gradient(135deg,#fbe4a6,var(--gold) 55%,var(--gold-soft));
+  box-shadow:0 16px 42px rgba(243,209,138,.34),inset 0 1px 0 rgba(255,255,255,.6);
+  transition:transform .3s ease,box-shadow .3s ease;
+  animation:envFloat 3.6s ease-in-out infinite;
+}
+@keyframes envFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.envelope:hover .env-body{box-shadow:0 22px 54px rgba(243,209,138,.48)}
+.envelope:active .env-body{transform:scale(.96);animation:none}
+/* diagonal pocket lines */
+.env-body::before{content:"";position:absolute;inset:0;border-radius:10px;
+  background:
+    linear-gradient(42deg,transparent 49.4%,rgba(0,0,0,.07) 50%,transparent 50.6%),
+    linear-gradient(-42deg,transparent 49.4%,rgba(0,0,0,.07) 50%,transparent 50.6%);
+}
+.env-flap{position:absolute;top:0;left:0;width:100%;height:54%;
+  background:linear-gradient(160deg,#fdecba,var(--gold-soft));
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  transform-origin:top center;transition:transform .55s ease;z-index:3;
+  box-shadow:0 2px 6px rgba(0,0,0,.10);
+}
+.env-heart{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);
+  font-size:1.55rem;z-index:2;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+.env-label{font-family:var(--sans);font-weight:600;font-size:1.02rem;letter-spacing:.03em;color:var(--gold)}
+.envelope.opening .env-body{animation:none}
+.envelope.opening .env-flap{transform:rotateX(178deg)}
+.envelope.opening .env-heart{opacity:0;transition:opacity .3s}
 .hint-tap{margin-top:1.2rem;font-size:.8rem;color:var(--text-dim);opacity:0;animation:fade 1s 1.5s forwards}
 @keyframes rise{to{opacity:1;transform:translateY(0)}}
 @keyframes fade{to{opacity:.75}}
@@ -159,27 +182,100 @@ body.locked{overflow:hidden;height:100%}
 /* ---------- story ---------- */
 #story{position:relative;z-index:3;display:none}
 #story.on{display:block}
-.story-intro{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12vh 24px 6vh}
-.story-intro .si-kicker{color:var(--gold);letter-spacing:.4em;text-transform:uppercase;font-size:.68rem;margin-bottom:14px}
-.story-intro h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,9vw,3rem);line-height:1.1}
-.story-intro p{color:var(--text-dim);font-weight:300;margin-top:14px;max-width:26ch}
+/* ---------- letter stage: typing birthday message ---------- */
+.letter-stage{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:9vh 22px 7vh}
+.letter-kicker{color:var(--gold);letter-spacing:.4em;text-transform:uppercase;font-size:.68rem;margin-bottom:14px}
+.letter-title{font-family:var(--serif);font-weight:600;line-height:1.04;max-width:100%;
+  font-size:clamp(2.4rem,10vw,3.6rem);margin-bottom:30px;
+  background:linear-gradient(180deg,#fff 0%,var(--gold) 72%,var(--gold-soft) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 40px rgba(243,209,138,.22)}
+.compose{width:100%;max-width:440px;border-radius:20px;overflow:hidden;text-align:left;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  border:1px solid rgba(243,209,138,.24);
+  box-shadow:0 26px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08)}
+.compose-head{display:flex;align-items:center;gap:9px;padding:13px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08);color:var(--text-dim);font-size:.84rem}
+.compose-head .to{color:var(--gold)}
+.compose-head .live{width:8px;height:8px;border-radius:50%;background:#5be07a;
+  box-shadow:0 0 8px #5be07a;margin-left:auto}
+.compose-body{padding:20px 18px;min-height:200px;white-space:pre-wrap;
+  font-family:var(--sans);font-weight:300;font-size:1.02rem;line-height:1.68;color:var(--text)}
+.compose-body .caret{display:inline-block;width:2px;height:1.05em;vertical-align:-.16em;
+  margin-left:2px;background:var(--gold);animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.compose-body.done .caret{animation:none;opacity:0}
+.scroll-cue2{margin-top:32px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:var(--text-dim);font-size:.8rem;opacity:0;transition:opacity .6s;cursor:pointer}
+.scroll-cue2.show{opacity:.85;animation:bob 1.8s ease-in-out infinite}
+.scroll-cue2 .chev{width:20px;height:20px;border-right:2px solid var(--gold);
+  border-bottom:2px solid var(--gold);transform:rotate(45deg)}
 
-.photo-card{max-width:520px;margin:0 auto;padding:10vh 22px}
-.frame{position:relative;border-radius:20px;overflow:hidden;
-  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  border:1px solid rgba(255,255,255,.12);
-  box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.03);
-  aspect-ratio:4/5;}
-.frame img{width:100%;height:100%;object-fit:cover;display:block}
-.frame .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;
-  color:var(--text-dim);font-weight:300;letter-spacing:.05em;
-  background:
-    linear-gradient(135deg,rgba(243,209,138,.10),rgba(234,160,182,.10)),
-    repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0 12px,transparent 12px 24px);}
-.frame .ph b{font-family:var(--serif);font-size:2.2rem;color:var(--gold);font-weight:500}
-.frame .ph small{opacity:.7}
-.caption{font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,5.2vw,1.5rem);line-height:1.35;
-  color:var(--text);text-align:center;margin-top:26px}
+/* ---------- polaroid gallery ---------- */
+.gallery{padding:11vh 20px 8vh;max-width:760px;margin:0 auto;text-align:center}
+.gallery-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.8rem,7vw,2.5rem);line-height:1.1}
+.gallery-sub{color:var(--text-dim);font-weight:300;font-size:.95rem;margin:12px auto 42px}
+.polaroids{display:flex;flex-wrap:wrap;justify-content:center;gap:26px 20px}
+.polaroid{background:#fbf7ef;border:none;padding:11px 11px 0;border-radius:4px;cursor:pointer;
+  width:min(43%,180px);opacity:0;transform:rotate(var(--rot,-3deg));
+  box-shadow:0 16px 34px rgba(0,0,0,.5);
+  transition:opacity .8s ease,transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s ease}
+.polaroid:nth-child(3n+2){--rot:3deg}
+.polaroid:nth-child(3n+3){--rot:-1.5deg}
+.polaroid:nth-child(3n+1){--rot:2deg}
+.polaroid:nth-child(2){transition-delay:.08s}
+.polaroid:nth-child(3){transition-delay:.16s}
+.polaroid:nth-child(4){transition-delay:.24s}
+.polaroid:nth-child(5){transition-delay:.32s}
+.polaroid.visible{opacity:1}
+.polaroid:hover{transform:rotate(0deg) scale(1.05);transition-delay:0s;
+  box-shadow:0 24px 48px rgba(0,0,0,.6),0 0 40px -8px rgba(243,209,138,.4)}
+.polaroid:active{transform:rotate(0deg) scale(.99);transition-delay:0s}
+.polaroid .pl-photo{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:2px;background:#20263f}
+.polaroid .pl-photo img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:sepia(.12) saturate(1.06) contrast(1.02)}
+.polaroid:nth-child(1) .pl-photo img{object-position:center 28%}
+.polaroid:nth-child(2) .pl-photo img{object-position:center 22%}
+.polaroid:nth-child(3) .pl-photo img{object-position:center 32%}
+.polaroid:nth-child(4) .pl-photo img{object-position:20% 35%}
+.polaroid:nth-child(5) .pl-photo img{object-position:center 25%}
+.polaroid:nth-child(6) .pl-photo img{object-position:72% 42%}
+.polaroid:nth-child(7) .pl-photo img{object-position:center 35%}
+.polaroid:nth-child(8) .pl-photo img{object-position:center 30%}
+.polaroid:nth-child(9) .pl-photo img{object-position:center 30%}
+.polaroid:nth-child(10) .pl-photo img{object-position:center center}
+.polaroid:nth-child(11) .pl-photo img{object-position:65% 28%}
+.polaroid:nth-child(12) .pl-photo img{object-position:center 25%}
+.polaroid:nth-child(13) .pl-photo img{object-position:center 30%}
+.polaroid:nth-child(14) .pl-photo img{object-position:70% 30%}
+.polaroid:nth-child(15) .pl-photo img{object-position:28% 40%}
+.polaroid .pl-cap{display:flex;align-items:center;justify-content:center;
+  height:44px;font-family:'Caveat',var(--serif);font-size:1.3rem;color:#b9a25f;opacity:.9}
+
+/* ---------- lightbox: expanded polaroid + one-word compliment ---------- */
+.lightbox{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;
+  padding:26px;background:rgba(5,7,15,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
+.lightbox.show{opacity:1;visibility:visible}
+.lightbox-inner{position:relative;transform:scale(.88) translateY(10px);
+  transition:transform .55s cubic-bezier(.2,.9,.25,1)}
+.lightbox.show .lightbox-inner{transform:none}
+.lb-frame{background:#fbf7ef;padding:16px 16px 0;border-radius:5px;
+  box-shadow:0 34px 80px rgba(0,0,0,.7);width:min(80vw,340px)}
+.lb-frame .pl-photo{aspect-ratio:1/1;overflow:hidden;border-radius:3px;background:#20263f}
+.lb-frame .pl-photo img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:sepia(.12) saturate(1.06) contrast(1.02)}
+.lb-word{font-family:'Caveat',var(--serif);font-weight:700;color:#2c2718;
+  font-size:clamp(2.4rem,11vw,3.2rem);text-align:center;padding:14px 8px 22px;
+  opacity:0;transform:translateY(10px);transition:opacity .6s .28s,transform .6s .28s}
+.lightbox.show .lb-word{opacity:1;transform:none}
+.lb-close{position:absolute;top:-54px;right:-4px;width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;
+  font-size:1.05rem;cursor:pointer;transition:transform .2s,background .2s}
+.lb-close:active{transform:scale(.9)}
+.lb-hint{position:absolute;left:0;right:0;bottom:-46px;text-align:center;color:var(--text-dim);
+  font-size:.78rem;letter-spacing:.05em}
 
 .reveal{opacity:0;transform:translateY(46px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
 .reveal.visible{opacity:1;transform:none}
@@ -220,17 +316,23 @@ body.locked{overflow:hidden;height:100%}
 
 <!-- INTRO -->
 <section id="intro" class="stage">
-  <div class="kicker">23 июля • сегодня твой день</div>
-  <h1>С днём рождения<span class="name">Даша</span></h1>
-  <p class="sub">Нажми — и начнётся немного волшебства</p>
-  <button class="open-btn" id="openBtn">Открыть<span class="heart">🤍</span></button>
+  <div class="kicker">25 июля • сегодня твой день</div>
+  <h1>С днём рождения<span class="name">Дашулька</span></h1>
+  <p class="sub">Внутри — письмо для тебя. Открой конверт ✨</p>
+  <button class="envelope" id="openBtn" aria-label="Открыть письмо">
+    <span class="env-body">
+      <span class="env-flap"></span>
+      <span class="env-heart">🤍</span>
+    </span>
+    <span class="env-label">Открыть письмо</span>
+  </button>
   <div class="hint-tap">со звуком будет теплее</div>
 </section>
 
 <!-- CAKE -->
 <section id="cake" class="stage hidden">
   <div class="cake-head">
-    <div class="cake-title" id="cakeTitle">Задуй свечи, Даша</div>
+    <div class="cake-title" id="cakeTitle">Задуй свечи</div>
     <div class="cake-note" id="cakeNote">тапни по каждому огоньку</div>
     <div class="wish" id="wish">
       <div class="w-big">Загадай желание</div>
@@ -250,36 +352,69 @@ body.locked{overflow:hidden;height:100%}
 
 <!-- STORY -->
 <main id="story">
-  <section class="story-intro reveal">
-    <div class="si-kicker">а теперь — про нас</div>
-    <h2>Немного тебя<br>и немного нас</h2>
-    <p>листай медленно, я собрал это с любовью</p>
+  <!-- typing birthday message -->
+  <section class="letter-stage reveal">
+    <div class="letter-kicker">для тебя</div>
+    <h1 class="letter-title">С днём рождения</h1>
+    <div class="compose">
+      <div class="compose-head"><span>кому:</span><span class="to">Даша 🤍</span><span class="live"></span></div>
+      <div class="compose-body" id="composeBody"><span id="typed"></span><span class="caret"></span></div>
+    </div>
+    <div class="scroll-cue2" id="scrollCue2"><span>дальше</span><span class="chev"></span></div>
   </section>
 
-  <article class="photo-card">
-    <div class="frame reveal"><img src="photos/1.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>1</b><small>photos/1.jpg</small></div></div>
-    <p class="caption reveal">Твои веснушки и этот взгляд из-под шляпки — целое лето в одном кадре. Я бы смотрел на тебя вечно.</p>
-  </article>
-
-  <article class="photo-card">
-    <div class="frame reveal"><img src="photos/2.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>2</b><small>photos/2.jpg</small></div></div>
-    <p class="caption reveal">Даже когда ты просто задумалась — ты невозможно красивая. И будто сама этого не замечаешь.</p>
-  </article>
-
-  <article class="photo-card">
-    <div class="frame reveal"><img src="photos/3.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>3</b><small>photos/3.jpg</small></div></div>
-    <p class="caption reveal">Ты и ромашки будто созданы друг для друга: простые, нежные и настоящие.</p>
-  </article>
-
-  <article class="photo-card">
-    <div class="frame reveal"><img src="photos/4.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>4</b><small>photos/4.jpg</small></div></div>
-    <p class="caption reveal">С тобой я разрешаю себе быть вот таким. Спасибо, что смеёшься вместе со мной.</p>
-  </article>
-
-  <article class="photo-card">
-    <div class="frame reveal"><img src="photos/5.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><b>5</b><small>photos/5.jpg</small></div></div>
-    <p class="caption reveal">Рядом с тобой мне спокойно. Вот это тепло и есть моё любимое место на земле.</p>
-  </article>
+  <!-- polaroid gallery -->
+  <section class="gallery">
+    <h2 class="gallery-title reveal">Ты в моих кадрах</h2>
+    <p class="gallery-sub reveal">нажми на каждую 🤍</p>
+    <div class="polaroids" id="polaroids">
+      <button class="polaroid" data-word="Задумчивая" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/1.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Нежная" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/2.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Настоящая" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/3.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Морская" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/4.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Милая" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/5.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Забавная" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/6.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Солнечная" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/7.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Уютная" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/8.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Живая" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/9.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Волшебная" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/10.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Добрая" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/11.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Искренняя" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/12.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Дерзкая" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/13.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Счастливая" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/14.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+      <button class="polaroid" data-word="Моя" aria-label="Открыть фото">
+        <div class="pl-photo"><img src="photos/15.jpg" alt=""></div><div class="pl-cap">нажми →</div>
+      </button>
+    </div>
+  </section>
 
   <section id="finale">
     <div class="age reveal">Тебе сегодня 20 ✨</div>
@@ -290,6 +425,18 @@ body.locked{overflow:hidden;height:100%}
     <button class="replay reveal" id="replay">запустить салют ещё раз ✨</button>
   </section>
 </main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lb-close" id="lbClose" aria-label="Закрыть">✕</button>
+    <div class="lb-frame">
+      <div class="pl-photo"><img id="lbImg" src="" alt=""></div>
+      <div class="lb-word" id="lbWord"></div>
+    </div>
+    <div class="lb-hint">нажми, чтобы закрыть</div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -331,7 +478,7 @@ body.locked{overflow:hidden;height:100%}
   function explode(x,y,power){
     if(particles.length>1300)return;           // safety cap for weaker phones
     var c=col(),n=power||(60+Math.random()*40);
-    flash=Math.min(flash+0.25,0.6);
+    flash=Math.min(flash+0.06,0.14);
     for(var i=0;i<n;i++){
       var a=Math.random()*Math.PI*2,sp=(Math.random()*4.4+1)*DPR*(power?1.15:1);
       particles.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,
@@ -409,22 +556,23 @@ body.locked{overflow:hidden;height:100%}
   var body=document.body,intro=document.getElementById('intro'),cake=document.getElementById('cake');
   introLoop();
   document.getElementById('openBtn').addEventListener('click',function(){
+    this.classList.add('opening');
     playMusic();
     muteBtn.classList.add('show');
     burstFor(2600);
-    intro.classList.add('hidden');
-    setTimeout(function(){cake.classList.remove('hidden');},650);
+    setTimeout(function(){intro.classList.add('hidden');},420);
+    setTimeout(function(){cake.classList.remove('hidden');},1000);
   });
 
   /* ---------- cake candles ---------- */
   var compliments=[
-    'Рядом с тобой я становлюсь собой',
-    'Твоя улыбка — моё любимое время суток',
-    'С тобой даже обычный день — праздник',
-    'Ты делаешь меня счастливым без слов',
-    'Обожаю, как ты смеёшься',
-    'Ты — моё самое родное «домой»',
-    'Я выбираю тебя. Каждый день'
+    'В твоих глазах я тону каждый раз заново',
+    'Твоя улыбка включает свет даже там, где было темно',
+    'Мог бы разглядывать твои глаза часами',
+    'Твой смех — моя самая любимая мелодия',
+    'Обожаю, как ты мыслишь',
+    'С тобой даже простой ужин вкуснее любого ресторана',
+    'С днём рождения 🤍 Пусть у тебя будет всё, что пожелаешь'
   ];
   var candlesBox=document.getElementById('candles'),lit=compliments.length,order=[];
   compliments.forEach(function(txt,i){
@@ -464,6 +612,7 @@ body.locked{overflow:hidden;height:100%}
     start('ambient');
     requestAnimationFrame(checkReveals);
     setTimeout(function(){story.scrollIntoView({behavior:'smooth'});checkReveals();},60);
+    setTimeout(startTyping,900);
     // safety-net ticker: reveal anything that enters view, regardless of scroll-event delivery
     var revTick=setInterval(function(){
       checkReveals();
@@ -471,14 +620,60 @@ body.locked{overflow:hidden;height:100%}
     },150);
   }
 
+  /* ---------- typewriter: birthday message ---------- */
+  var typed=false;
+  function startTyping(){
+    if(typed)return;typed=true;
+    var out=document.getElementById('typed'),body2=document.getElementById('composeBody');
+    var msg='Даша, с днём рождения 🤍\n\nРади встречи с тобой трястись два часа в автобусе — одно удовольствие. Как жаль, что до Кемера на автобусе не доехать и не получится поздравить лично.\n\nХочу тебе пожелать поменьше тревог и побольше счастья и улыбок, бесконечного здоровья и энергии.\nВсегда оставайся собой, улыбайся чаще, чем задумываешься, и пусть сбудется каждая твоя мечта — даже самая большая.\n\nОбнимаю,\nБулат (Шелуха)';
+    var chars=Array.from(msg),i=0;
+    if(reduced){out.textContent=msg;body2.classList.add('done');document.getElementById('scrollCue2').classList.add('show');return;}
+    (function step(){
+      if(i<=chars.length){
+        out.textContent=chars.slice(0,i).join('');
+        var ch=chars[i-1]||'';i++;
+        var d = ch==='\n'?300 : (/[,.!—]/.test(ch)?230 : 34+Math.random()*46);
+        setTimeout(step,d);
+      } else {
+        body2.classList.add('done');
+        setTimeout(function(){document.getElementById('scrollCue2').classList.add('show');},450);
+      }
+    })();
+  }
+  document.getElementById('scrollCue2').addEventListener('click',function(){
+    document.querySelector('.gallery').scrollIntoView({behavior:'smooth'});
+  });
+
+  /* ---------- polaroid lightbox ---------- */
+  (function(){
+    var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg'),
+        lbWord=document.getElementById('lbWord');
+    function open(btn){
+      var img=btn.querySelector('img');
+      lbImg.src=img.getAttribute('src');
+      lbImg.style.objectPosition=getComputedStyle(img).objectPosition;
+      lbWord.textContent=btn.getAttribute('data-word');
+      lb.classList.add('show');
+    }
+    function close(){lb.classList.remove('show');}
+    document.getElementById('polaroids').addEventListener('click',function(e){
+      var btn=e.target.closest('.polaroid');if(btn)open(btn);
+    });
+    lb.addEventListener('click',function(e){
+      if(e.target===lb||e.target.classList.contains('lightbox-inner')||e.target.id==='lbClose')close();
+    });
+    document.getElementById('lbClose').addEventListener('click',close);
+    addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  })();
+
   /* ---------- reveal on scroll (robust; works after display toggle) ---------- */
   function checkReveals(){
     var vh=window.innerHeight||document.documentElement.clientHeight;
-    var list=document.querySelectorAll('.reveal:not(.visible)');
+    var list=document.querySelectorAll('.reveal:not(.visible),.polaroid:not(.visible)');
     for(var i=0;i<list.length;i++){
       // reveal once the element's top has crossed the trigger line; stays revealed
       // even after a fast fling scrolls it above the viewport
-      if(list[i].getBoundingClientRect().top < vh*0.86){ list[i].classList.add('visible'); }
+      if(list[i].getBoundingClientRect().top < vh*0.9){ list[i].classList.add('visible'); }
     }
   }
   addEventListener('scroll',checkReveals,{passive:true});
