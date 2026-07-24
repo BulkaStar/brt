@@ -285,10 +285,14 @@ body.locked{overflow:hidden;height:100%}
 #finale .age{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:clamp(1.3rem,6vw,1.9rem);margin-bottom:18px}
 #finale h2{font-family:var(--serif);font-weight:600;font-size:clamp(2.2rem,10vw,3.4rem);line-height:1.06;
   background:linear-gradient(180deg,#fff,var(--gold) 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-#finale .wish-text{color:var(--text-dim);font-weight:300;font-size:1.06rem;line-height:1.7;margin:28px auto 0;max-width:32ch}
-#finale .heart-big{font-size:2.4rem;margin:30px 0 8px;filter:drop-shadow(0 0 18px rgba(234,160,182,.5))}
-#finale .sign{font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--text)}
-#finale .sign small{display:block;color:var(--text-dim);font-style:normal;font-family:var(--sans);font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;margin-bottom:6px}
+#finale .cycler{margin:34px auto 8px;min-height:2.4em;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:600;line-height:1.08;font-size:clamp(2.2rem,10vw,3.6rem);
+  background:linear-gradient(180deg,#fff,var(--gold) 92%);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;text-shadow:0 0 40px rgba(243,209,138,.2)}
+#finale .cyc-caret{-webkit-text-fill-color:initial;display:inline-block;width:3px;height:1em;
+  margin-left:6px;background:var(--gold);vertical-align:-.08em;animation:cycBlink 1s step-end infinite;
+  box-shadow:0 0 12px rgba(243,209,138,.7)}
+@keyframes cycBlink{50%{opacity:0}}
 .replay{margin-top:44px;padding:13px 30px;border:1px solid rgba(243,209,138,.5);background:rgba(243,209,138,.06);
   color:var(--gold);border-radius:100px;font-family:var(--sans);font-size:.92rem;cursor:pointer;transition:background .25s,transform .2s}
 .replay:active{transform:scale(.96)}
@@ -418,10 +422,7 @@ body.locked{overflow:hidden;height:100%}
 
   <section id="finale">
     <div class="age reveal">Тебе сегодня 20 ✨</div>
-    <h2 class="reveal">С днём рождения,<br>любимая</h2>
-    <p class="wish-text reveal">Пусть этот год будет к тебе таким же нежным, как ты — ко мне. Пусть сбывается загаданное над свечами, а рядом всегда будет тот, кто тебя любит. Спасибо, что ты есть.</p>
-    <div class="heart-big reveal">🤍</div>
-    <div class="sign reveal"><small>всегда твой</small>Шелуха</div>
+    <div class="cycler reveal"><span id="cyclerText"></span><span class="cyc-caret"></span></div>
     <button class="replay reveal" id="replay">запустить салют ещё раз ✨</button>
   </section>
 </main>
@@ -625,7 +626,7 @@ body.locked{overflow:hidden;height:100%}
   function startTyping(){
     if(typed)return;typed=true;
     var out=document.getElementById('typed'),body2=document.getElementById('composeBody');
-    var msg='Даша, с днём рождения 🤍\n\nРади встречи с тобой трястись два часа в автобусе — одно удовольствие. Как жаль, что до Кемера на автобусе не доехать и не получится поздравить лично.\n\nХочу тебе пожелать поменьше тревог и побольше счастья и улыбок, бесконечного здоровья и энергии.\nВсегда оставайся собой, улыбайся чаще, чем задумываешься, и пусть сбудется каждая твоя мечта — даже самая большая.\n\nОбнимаю,\nБулат (Шелуха)';
+    var msg='Даша, с днём рождения 🤍\n\nРади встречи с тобой трястись два часа в автобусе — одно удовольствие. Как жаль, что до Кемера на автобусе не доехать и не получится поздравить лично.\n\nХочу тебе пожелать поменьше тревог и побольше счастья и улыбок, бесконечного здоровья и энергии.\nВсегда оставайся собой, улыбайся так, будто весь мир для тебя одной, и пусть сбудется каждая твоя мечта — даже самая большая.\n\nОбнимаю,\nБулат (Шелуха)';
     var chars=Array.from(msg),i=0;
     if(reduced){out.textContent=msg;body2.classList.add('done');document.getElementById('scrollCue2').classList.add('show');return;}
     (function step(){
@@ -678,6 +679,30 @@ body.locked{overflow:hidden;height:100%}
   }
   addEventListener('scroll',checkReveals,{passive:true});
   addEventListener('resize',checkReveals);
+
+  /* ---------- finale: looping type/erase phrases ---------- */
+  (function(){
+    var el=document.getElementById('cyclerText');
+    if(!el)return;
+    var phrases=['С днём рождения!','Со всей душой','Всего самого-самого','Ты лучшая!','Пусть мечты сбываются','With love 🤍'];
+    if(reduced){el.textContent=phrases[0];return;}
+    var pi=0,ci=0,deleting=false;
+    function tick(){
+      var full=Array.from(phrases[pi]);
+      if(!deleting){
+        ci++;
+        el.textContent=full.slice(0,ci).join('');
+        if(ci>=full.length){deleting=true;return setTimeout(tick,1500);}
+        setTimeout(tick,80+Math.random()*50);
+      } else {
+        ci--;
+        el.textContent=full.slice(0,ci).join('');
+        if(ci<=0){deleting=false;pi=(pi+1)%phrases.length;return setTimeout(tick,380);}
+        setTimeout(tick,42);
+      }
+    }
+    tick();
+  })();
 
   /* ---------- replay ---------- */
   document.getElementById('replay').addEventListener('click',function(){
