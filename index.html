@@ -396,7 +396,7 @@ body.locked{overflow:hidden;height:100%}
       <button class="polaroid" data-word="Настоящая" aria-label="Открыть фото">
         <div class="pl-photo"><img src="photos/3.jpg" alt=""></div><div class="pl-cap">нажми →</div>
       </button>
-      <button class="polaroid" data-word="Морская" aria-label="Открыть фото">
+      <button class="polaroid" data-word="Многогранная" aria-label="Открыть фото">
         <div class="pl-photo"><img src="photos/4.jpg" alt=""></div><div class="pl-cap">нажми →</div>
       </button>
       <button class="polaroid" data-word="Милая" aria-label="Открыть фото">
@@ -641,7 +641,7 @@ body.locked{overflow:hidden;height:100%}
   function startTyping(){
     if(typed)return;typed=true;
     var out=document.getElementById('typed'),body2=document.getElementById('composeBody');
-    var msg='Даша, с днём рождения 🤍\n\nРади встречи с тобой трястись два часа в автобусе — одно удовольствие. Как жаль, что до Кемера на автобусе не доехать и не получится поздравить лично.\n\nХочу тебе пожелать поменьше тревог и побольше счастья и улыбок, бесконечного здоровья и энергии.\nВсегда оставайся собой, улыбайся так, будто весь мир для тебя одной, и пусть сбудется каждая твоя мечта — даже самая большая.\n\nОбнимаю,\nБулат (Шелуха)';
+    var msg='Даша, с днём рождения 🤍\n\nРади встречи с тобой трястись два часа в автобусе — одно удовольствие. Как жаль, что до Кемера на автобусе не доехать и не получиться поздравить лично.\n\nХочу тебе пожелать поменьше тревог и побольше счастья и улыбок, бесконечного здоровья и энергии.\nВсегда оставайся собой, улыбайся так, будто весь мир для тебя одной, и пусть сбудется каждая твоя мечта — даже самая большая.\n\nОбнимаю,\nБулат (Шелуха)';
     var chars=Array.from(msg),i=0;
     if(reduced){out.textContent=msg;body2.classList.add('done');document.getElementById('scrollCue2').classList.add('show');return;}
     (function step(){
